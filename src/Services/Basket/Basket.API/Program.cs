@@ -2,6 +2,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 Assembly assembly = typeof(Program).Assembly;
 string posgresConnectionString = builder.Configuration.GetConnectionString("Database")!;
+string redisConnectionString = builder.Configuration.GetConnectionString("Redis")!;
 string applicationName = Assembly.GetExecutingAssembly().GetName().Name!;
 
 // Add services to container.
@@ -33,13 +34,27 @@ builder.Services
     .Configure<ApplicationOptions>(options => options.ApplicationName = applicationName)
     .ConfigureOptions<ConfigureSwaggerGenOptions>();
 
-builder.Services
-    .AddHealthChecks()
-    .AddNpgSql(posgresConnectionString);
-
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+builder.Services.Decorate<IBasketRepository, CachedBasketRepository>();
+
+//builder.Services.AddScoped<IBasketRepository>(provider =>
+//{
+//    IBasketRepository basketRepository = provider.GetRequiredService<IBasketRepository>();
+//    return new CachedBasketRepository(basketRepository, provider.GetRequiredService<IDistributedCache>());
+//});
+
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = redisConnectionString;
+    //options.InstanceName = "Basket";
+});
+
+builder.Services
+    .AddHealthChecks()
+    .AddNpgSql(posgresConnectionString)
+    .AddRedis(redisConnectionString);
 
 WebApplication app = builder.Build();
 
