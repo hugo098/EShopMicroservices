@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Catalog.API.ServicesConfig.OpenApi;
+namespace BuildingBlocks.OpenApi;
 
 public static class SwaggerServiceConfig
 {
