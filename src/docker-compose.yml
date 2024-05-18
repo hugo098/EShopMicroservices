@@ -4,6 +4,10 @@ name: eshop
 services:
   catalogdb:
     image: postgres
+
+  basketdb:
+    image: postgres
+
   eshop.seq:
     image: datalust/seq:latest
 
@@ -15,4 +19,5 @@ services:
 
 volumes:
   postgres_catalog:
+  postgres_basket:
 

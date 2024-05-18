@@ -1,17 +1,22 @@
 ﻿using Asp.Versioning.ApiExplorer;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Catalog.API.ServicesConfig.OpenApi;
+namespace BuildingBlocks.OpenApi;
 
 public class ConfigureSwaggerGenOptions : IConfigureNamedOptions<SwaggerGenOptions>
 {
     private readonly IApiVersionDescriptionProvider _provider;
+    private readonly ApplicationOptions _applicationOptions;
 
-    public ConfigureSwaggerGenOptions(IApiVersionDescriptionProvider provider)
+
+    public ConfigureSwaggerGenOptions(
+        IApiVersionDescriptionProvider provider, IOptions<ApplicationOptions> applicationOptions)
     {
         _provider = provider;
+        _applicationOptions = applicationOptions.Value;
     }
 
     public void Configure(string? name, SwaggerGenOptions options)
@@ -20,7 +25,7 @@ public class ConfigureSwaggerGenOptions : IConfigureNamedOptions<SwaggerGenOptio
         {
             OpenApiInfo openApiInfo = new()
             {
-                Title = $"Catalog.API v{description.ApiVersion}",
+                Title = $"{_applicationOptions.ApplicationName} v{description.ApiVersion}",
                 Version = description.ApiVersion.ToString(),
             };
 

@@ -4,7 +4,7 @@ Assembly assembly = typeof(Program).Assembly;
 string posgresConnectionString = builder.Configuration.GetConnectionString("Database")!;
 string applicationName = Assembly.GetExecutingAssembly().GetName().Name!;
 
-// Add services to the container
+// Add services to container.
 
 builder.Host.UseSerilog((context, loggerConfig) =>
 {
@@ -25,28 +25,26 @@ builder.Services.AddCarter();
 builder.Services.AddMarten(opts =>
 {
     opts.Connection(posgresConnectionString);
+    opts.Schema.For<ShoppingCart>().Identity(x => x.Username);
 }).UseLightweightSessions();
-
-if (builder.Environment.IsDevelopment())
-    builder.Services.InitializeMartenWith<CatalogInitialData>();
 
 builder.Services
     .AddSwaggerApiVersioning()
     .Configure<ApplicationOptions>(options => options.ApplicationName = applicationName)
     .ConfigureOptions<ConfigureSwaggerGenOptions>();
 
-builder.Services.AddExceptionHandler<CustomExceptionHandler>();
-
 builder.Services
     .AddHealthChecks()
     .AddNpgSql(posgresConnectionString);
 
+builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+
+builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 
 WebApplication app = builder.Build();
 
-// Configure the http request pipeline
-ApiVersionSet apiVersionSet = app
-            .NewApiVersionSet()
+// Configure the HTTP request pipeline.
+ApiVersionSet apiVersionSet = app.NewApiVersionSet()
             .HasApiVersion(new ApiVersion(1))
             .ReportApiVersions()
             .Build();
