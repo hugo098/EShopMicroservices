@@ -1,4 +1,4 @@
-﻿namespace Basket.API.Features.Basket.DeleteBasket;
+﻿namespace Basket.API.Features.Basket.DeleteBasket.v1;
 
 //public record DeleteBasketRequest(string Username);
 public record DeleteBasketResponse(bool IsSuccess);
