@@ -396,3 +396,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+#sqlite db
+discountdb
+discountdb-shm
+discountdb-wal
