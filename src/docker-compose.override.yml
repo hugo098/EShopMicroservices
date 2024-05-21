@@ -64,10 +64,12 @@ services:
       - ConnectionStrings__Database=Server=basketdb;Port=5432;Database=BasketDb;User Id=postgres;Password=postgres;Include Error Detail=true
       - ConnectionStrings__Redis=distributedcache:6379
       - Serilog__WriteTo__1__Args__serverUrl=http://eshop-seq:5341
+      - GrpcSettings__DiscountUrl=https://discount.grpc:8081
     depends_on:
       - eshop.seq
       - basketdb
       - distributedcache
+      - discount.grpc
     ports:
       - "6001:8080"
       - "6061:8081"
