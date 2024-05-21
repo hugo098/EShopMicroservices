@@ -1,3 +1,6 @@
+using Discount.Grpc;
+using System.Net.Security;
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 Assembly assembly = typeof(Program).Assembly;
@@ -7,49 +10,58 @@ string applicationName = Assembly.GetExecutingAssembly().GetName().Name!;
 
 // Add services to container.
 
+// Application Services
 builder.Host.UseSerilog((context, loggerConfig) =>
 {
     loggerConfig.ReadFrom.Configuration(context.Configuration);
 });
-
 builder.Services.AddMediatR(config =>
 {
     config.RegisterServicesFromAssembly(assembly);
     config.AddOpenBehavior(typeof(ValidationBehavior<,>));
     config.AddOpenBehavior(typeof(LoggingBehavior<,>));
 });
-
-builder.Services.AddValidatorsFromAssembly(assembly);
-
 builder.Services.AddCarter();
 
+// Data Services
 builder.Services.AddMarten(opts =>
 {
     opts.Connection(posgresConnectionString);
     opts.Schema.For<ShoppingCart>().Identity(x => x.Username);
 }).UseLightweightSessions();
 
-builder.Services
-    .AddSwaggerApiVersioning()
-    .Configure<ApplicationOptions>(options => options.ApplicationName = applicationName)
-    .ConfigureOptions<ConfigureSwaggerGenOptions>();
-
-builder.Services.AddExceptionHandler<CustomExceptionHandler>();
-
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 builder.Services.Decorate<IBasketRepository, CachedBasketRepository>();
-
-//builder.Services.AddScoped<IBasketRepository>(provider =>
-//{
-//    IBasketRepository basketRepository = provider.GetRequiredService<IBasketRepository>();
-//    return new CachedBasketRepository(basketRepository, provider.GetRequiredService<IDistributedCache>());
-//});
 
 builder.Services.AddStackExchangeRedisCache(options =>
 {
     options.Configuration = redisConnectionString;
     //options.InstanceName = "Basket";
 });
+
+// Grpc Service
+builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(options =>
+{
+    options.Address = new Uri(builder.Configuration["GrpcSettings:DiscountUrl"]!);
+})
+.ConfigurePrimaryHttpMessageHandler(() =>
+{
+    HttpClientHandler handler = new()
+    {
+        ServerCertificateCustomValidationCallback = builder.Environment.IsDevelopment() ? HttpClientHandler.DangerousAcceptAnyServerCertificateValidator : null,
+    };
+
+    return handler;
+});
+
+// Cross-Cutting Services
+builder.Services.AddValidatorsFromAssembly(assembly);
+builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+
+builder.Services
+    .AddSwaggerApiVersioning()
+    .Configure<ApplicationOptions>(options => options.ApplicationName = applicationName)
+    .ConfigureOptions<ConfigureSwaggerGenOptions>();
 
 builder.Services
     .AddHealthChecks()
