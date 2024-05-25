@@ -6,14 +6,19 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services
-    .AddApplicationServices()
-    .AddInfrastructureServices(builder.Configuration)
-    .AddApiServices();
+       .AddApplicationServices()
+       .AddInfrastructureServices(builder.Configuration)
+       .AddApiServices();
 
 WebApplication app = builder.Build();
 
 // Configura the HTTP request pipeline.
 
 app.UseApiServices();
+
+if (app.Environment.IsDevelopment())
+{
+    await app.InitialiseDatabaseAsync();
+}
 
 app.Run();

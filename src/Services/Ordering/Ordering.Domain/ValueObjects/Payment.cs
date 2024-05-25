@@ -7,6 +7,10 @@ public record class Payment
     public string CVV { get; } = default!;
     public int PaymentMethod { get; } = default!;
 
+    protected Payment()
+    {
+    }
+
     private Payment(
         string cardName,
         string cardNumber,

@@ -17,8 +17,6 @@ public static class DependencyInjection
 
     public static WebApplication UseApiServices(this WebApplication app) 
     {
-
-
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
