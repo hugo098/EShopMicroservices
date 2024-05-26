@@ -22,6 +22,7 @@ builder.Services.AddDbContext<DiscountContext>(opts =>
 WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseSerilogRequestLogging();
 app.UseMigration();
 app.MapGrpcService<DiscountService>();
 
