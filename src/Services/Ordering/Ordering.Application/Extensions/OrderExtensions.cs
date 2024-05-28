@@ -7,6 +7,7 @@ public static class OrderExtensions
            Id: order.Id.Value,
            CustomerId: order.CustomerId.Value,
            OrderName: order.OrderName.Value,
+           TotalPrice: order.TotalPrice,
            ShippingAddress: new AddressDto(
                order.ShippingAddress.FirstName,
                order.ShippingAddress.LastName,

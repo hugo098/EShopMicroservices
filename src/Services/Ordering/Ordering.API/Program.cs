@@ -14,7 +14,7 @@ builder.Host.UseSerilog((context, loggerConfig) =>
 builder.Services
        .AddApplicationServices()
        .AddInfrastructureServices(builder.Configuration)
-       .AddApiServices();
+       .AddApiServices(builder.Configuration);
 
 WebApplication app = builder.Build();
 

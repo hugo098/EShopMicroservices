@@ -5,6 +5,7 @@ public record OrderDto(
     Guid Id,
     Guid CustomerId,
     string OrderName,
+    decimal TotalPrice,
     AddressDto ShippingAddress,
     AddressDto BillingAddress,
     PaymentDto Payment,

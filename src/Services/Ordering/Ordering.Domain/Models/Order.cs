@@ -1,8 +1,9 @@
 ﻿namespace Ordering.Domain.Models;
 public class Order : Aggregate<OrderId>
 {
-    private readonly List<OrderItem> _orderItem = [];
-    public IReadOnlyList<OrderItem> OrderItems => _orderItem.AsReadOnly();
+    private readonly List<OrderItem> _orderItems = [];
+    public IReadOnlyList<OrderItem> OrderItems => _orderItems.AsReadOnly();
+
     public CustomerId CustomerId { get; private set; } = default!;
     public OrderName OrderName { get; private set; } = default!;
     public Address ShippingAddress { get; private set; } = default!;
@@ -62,16 +63,16 @@ public class Order : Aggregate<OrderId>
 
         OrderItem orderItem = new(Id, productId, quantity, price);
 
-        _orderItem.Add(orderItem);
+        _orderItems.Add(orderItem);
     }
 
     public void Remove(ProductId productId)
     {
-        OrderItem? orderItem = _orderItem.FirstOrDefault(x => x.ProductId == productId);
+        OrderItem? orderItem = _orderItems.FirstOrDefault(x => x.ProductId == productId);
 
         if(orderItem is not null)
         {
-            _orderItem.Remove(orderItem);
+            _orderItems.Remove(orderItem);
         }
     }
 }
