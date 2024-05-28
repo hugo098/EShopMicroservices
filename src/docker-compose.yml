@@ -11,6 +11,9 @@ services:
   distributedcache:
     image: redis 
 
+  orderdb:
+    image: mcr.microsoft.com/mssql/server
+
   eshop.seq:
     image: datalust/seq:latest
 
