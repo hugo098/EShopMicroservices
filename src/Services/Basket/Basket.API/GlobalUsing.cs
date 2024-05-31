@@ -2,6 +2,7 @@
 global using Asp.Versioning.ApiExplorer;
 global using Asp.Versioning.Builder;
 global using Basket.API.Data;
+global using Basket.API.Dto;
 global using Basket.API.Exceptions;
 global using Basket.API.Models;
 global using BuildingBlocks.Behaviors;

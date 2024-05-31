@@ -12,7 +12,7 @@ builder.Host.UseSerilog((context, loggerConfig) =>
 });
 
 builder.Services
-       .AddApplicationServices()
+       .AddApplicationServices(builder.Configuration)
        .AddInfrastructureServices(builder.Configuration)
        .AddApiServices(builder.Configuration);
 
