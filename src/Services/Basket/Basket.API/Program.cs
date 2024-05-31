@@ -1,3 +1,4 @@
+using BuildingBlocks.Messaging.MassTransit;
 using Discount.Grpc;
 using System.Net.Security;
 
@@ -53,6 +54,9 @@ builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(
 
     return handler;
 });
+
+//Async Communication services
+builder.Services.AddMessageBroker(builder.Configuration);
 
 // Cross-Cutting Services
 builder.Services.AddValidatorsFromAssembly(assembly);
