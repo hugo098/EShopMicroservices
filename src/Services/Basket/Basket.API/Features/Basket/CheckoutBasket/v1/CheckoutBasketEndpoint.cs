@@ -1,9 +1,6 @@
-﻿using Basket.API.Features.Basket.DeleteBasket.v1;
-
-namespace Basket.API.Features.Basket.CheckoutBasket.v1;
+﻿namespace Basket.API.Features.Basket.CheckoutBasket.v1;
 
 public record CheckoutBasketRequest(BasketCheckoutDto BasketCheckoutDto);
-
 public record CheckoutBasketResponse(bool IsSuccess);
 
 public class CheckoutBasketEndpoint : ICarterModule
